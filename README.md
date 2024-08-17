@@ -4,6 +4,7 @@ Features
         -redirect to browse page
     -Browse (After Authentication)
         -Header
+        -Login form
         -Main Movie
             -Trailer in Background
             -Tile and Description

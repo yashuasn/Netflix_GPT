@@ -5,8 +5,8 @@ import { useState, useRef } from 'react';
 import { checkValidData } from '../Utils/validate';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from '../Utils/firebase'
-import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { addUser } from '../Utils/userSlice';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -15,7 +15,6 @@ const Login = () => {
     const email = useRef(null);
     const password = useRef(null);
     const name = useRef(null);
-    const navigate = useNavigate();
     const handleButtonClick = () => {
         const message = checkValidData(email.current.value, password.current.value)
         setErrorMessage(message);
@@ -30,19 +29,23 @@ const Login = () => {
                         displayName: name.current.value
                     }).then(() => {
                         // dispatch()
-                        navigate("/browse");
+                        const { uid, email, displayName, photoURL } = auth.currentUser;
+                        dispatch(
+                            addUser({
+                                uid: uid,
+                                email: email,
+                                displayName: displayName,
+                                photoURL: photoURL
+                            })
+                        )
 
                     }).catch((e) => {
                         setErrorMessage(e.message);
                     })
-                    console.log(user);
-
                 })
                 .catch((e) => {
                     const errorCode = e.code;
                     const errorMessage = e.message;
-                    console.log(errorCode);
-                    console.log(errorMessage);
                     setErrorMessage(errorCode + " + " + errorMessage)
                 })
 
@@ -51,8 +54,7 @@ const Login = () => {
             signInWithEmailAndPassword(auth, email.current.value, password.current.value)
                 .then((userCredential) => {
                     const user = userCredential.user;
-                    console.log(user);
-                    navigate("/browse");
+
                 })
                 .catch((error) => {
                     const errorCode = error.code;

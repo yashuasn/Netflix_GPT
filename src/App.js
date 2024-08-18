@@ -1,11 +1,15 @@
 
+import { Provider } from 'react-redux';
 import './App.css';
 import Body from './Components/Body';
+import store from './Utils/store';
 
 function App() {
   return (
-    <div >
-      <Body />
+    <div  >
+      <Provider store={store}>
+        <Body />
+      </Provider>
     </div>
   );
 }
